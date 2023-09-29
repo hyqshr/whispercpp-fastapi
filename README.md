@@ -1,5 +1,5 @@
 # Host whisper model for free (AWS free tier)
-Host whisper model on aws free tier EC2 instance step by step. 
+Step by step guide on how to host whisper model on aws free tier EC2 instance . 
 
 We will use [Cython version](https://github.com/stlukey/whispercpp.py) of [whisper.cpp](https://github.com/ggerganov/whisper.cpp) so we could easily host it with fastapi.
 
@@ -10,21 +10,21 @@ In my case, I successfully host `tiny` and `base` on 1GB memory free tier EC2 ub
 ![Alt text](public/image.png)
 
 2. [optional] 
-set up Key pair `.pem` file for SSH if you want to modify the code. Theoretically you don't need to SSH and modify code to make this project work. You can also directly use the console that AWS provided.
+set up Key pair `.pem` file if you prefer ssh (recommended). Theoretically you don't need to SSH and modify code to make this project work. You can also directly connect to the console that EC2 provided.
+
 ![Alt text](public/image-1.png)
 
 3. Network setting
 For easy testing purpose, now we just allow traffic from everywhere. 
 ![Alt text](public/image-2.png)
 
-4. Launch and connect your ubuntu instance
-Launch the instance, and click connect button to the following page. You can use `EC2 Instance Connect` if you don't want to do SSH.
+4. Launch and connect to the instance. You can use SSH or AWS console.
+
 ![Alt text](public/image-3.png)
 
-Now, your are connected to your EC2 Ubuntu instance!
 
 # Step 2: Clone the Repo/Install Dependencies
-Clone this Repo:
+In your ubuntu instance, clone this Repo:
 ```
 git clone https://github.com/hyqshr/whispercpp-fastapi.git
 ```
@@ -41,9 +41,8 @@ pip install -r requirements.txt
 ```
  In my case, the system will prompt for reboot, just hit enter.
 
-We are getting close. Now all the dependencies are installed
+We are getting close. Now all the dependencies are installed, let's test our API by:
 
-Now, run
 ```
 python3 -m uvicorn main:app --reload
 ```
@@ -68,9 +67,9 @@ cd /etc/nginx/sites-enabled/
 sudo vim fastapi_nginx
 ```
 
-**Click i for insert mode**, then copy paste this in the file:
+If you not sure how to use VIM, **Click i to enter insert mode**, then copy paste the following file:
 
-!!!Note, you should change your `server_name` to your Public IPv4 address.
+!!!Note, you should change `server_name` to your instance `Public IPv4 address`.
 
 ```
 server {
@@ -86,20 +85,19 @@ server {
 
 ![Alt text](public/image-5.png)
 
-To save and quit vim, hit `esc` on keyboard,then type `:wq!` one by one, then hit `enter`.
+To save and quit vim, hit `esc` on keyboard,then type `:wq!` word by word, then hit `enter`.
 
 Start Nginx server:
 ```
 sudo service nginx restart
 ```
-
-Now, go to our project folder and start our server:
+Then:
 ```
 cd ~/whispercpp-fastapi
 python3 -m uvicorn main:app --reload
 ```
 
-Now visit you {public ipv4 address}/docs from your browser: 
+Now visit you {public ipv4 address}/docs from your local browser, you should be able to see: 
 
 ![Alt text](public/image-6.png)
 We are able to communicate to our API now! Try out the Swagger provided by fastapi, and try submit a file to our whisper worker
