@@ -1,19 +1,14 @@
-from fastapi import FastAPI, Form, UploadFile, File
-from fastapi import HTTPException, status
-
+from fastapi import FastAPI, UploadFile, File
 import os
 import shutil
-from functools import lru_cache
-from pathlib import Path
-from typing import Any, List, Union, Optional
 from whispercpp import Whisper
-
-from datetime import timedelta
 
 app = FastAPI()
 w = Whisper('tiny')
 UPLOAD_DIR="/tmp"
-
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+    
 @app.post('/v1/audio/transcriptions')
 async def transcriptions(file: UploadFile = File(...)):
     filename = file.filename
@@ -24,7 +19,6 @@ async def transcriptions(file: UploadFile = File(...)):
     upload_file.close()
     
     result = w.transcribe(upload_name)
-    print(result, "result")
     text = w.extract_text(result)
     
     return text
