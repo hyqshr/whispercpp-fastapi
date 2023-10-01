@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "https://mediabro.vercel.app"],
+    allow_origins=["*"],
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
     allow_credentials=True,
@@ -20,7 +20,7 @@ UPLOAD_DIR="/tmp"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
     
-@app.post('/v1/audio/transcriptions')
+@app.post('/transcribe')
 async def transcriptions(file: UploadFile = File(...)):
     filename = file.filename
     fileobj = file.file
