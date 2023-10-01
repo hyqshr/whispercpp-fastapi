@@ -2,8 +2,19 @@ from fastapi import FastAPI, UploadFile, File
 import os
 import shutil
 from whispercpp import Whisper
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost", "https://mediabro.vercel.app"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+    allow_credentials=True,
+    expose_headers=["Content-Disposition"],
+)
+
 w = Whisper('tiny')
 UPLOAD_DIR="/tmp"
 if not os.path.exists(UPLOAD_DIR):
